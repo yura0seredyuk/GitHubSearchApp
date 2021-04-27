@@ -20,7 +20,7 @@ const App = () => {
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [reposUrl, setReposUrl] = useState('');
-  const [reposList, setReposList] = useState('');
+  const [reposList, setReposList] = useState([]);
 
   useEffect(() => {
     fetch(BASE_URL)
@@ -36,34 +36,59 @@ const App = () => {
       .then(data => {
         setReposList(data);
       });
-  }, []);
+  }, [reposUrl]);
 
   function displayCard() {
     return reposList.map(repos => {
       return (
-        <Card>
+        <Card key={repos.id}>
           <CardItem>
             <Left>
               <Thumbnail source={{uri: `${avatarUrl}`}} />
               <Body>
-                <Text>{repos.name}</Text>
+                <Text>Name: {repos.name}</Text>
                 <Text note>{name}</Text>
               </Body>
             </Left>
+            <Right>
+              <Button transparent>
+                <Icon
+                  type="MaterialIcons"
+                  name="star-border"
+                  style={styles.star}
+                />
+                <Text></Text>
+              </Button>
+            </Right>
           </CardItem>
+
+          <CardItem bordered>
+            <Body>
+              <Text>Description: {repos.description}</Text>
+            </Body>
+          </CardItem>
+
+          <CardItem>
+            <Body>
+              <Text>Language: {repos.language}</Text>
+            </Body>
+          </CardItem>
+
           <CardItem>
             <Left>
               <Button transparent>
-                <Text>12 Likes</Text>
+                <Icon type="MaterialIcons" name="star" />
+                <Text>Stars: {repos.stargazers_count}</Text>
               </Button>
             </Left>
             <Body>
               <Button transparent>
-                <Text>4 Comments</Text>
+                <Icon type="AntDesign" name="fork" />
+                <Text>Forks : {repos.forks_count}</Text>
               </Button>
             </Body>
             <Right>
-              <Text>11h ago</Text>
+              <Text>Updated at: {repos.updated_at}</Text>
             </Right>
           </CardItem>
         </Card>
@@ -80,17 +105,9 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  text: {
-    margin: 30,
-    color: 'red',
-  },
-  image: {
-    width: 100,
-    height: 100,
+  star: {
+    fontSize: 35,
+    color: 'orange',
   },
 });
 
