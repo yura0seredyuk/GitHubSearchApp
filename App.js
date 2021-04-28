@@ -12,15 +12,21 @@ import {
   Left,
   Body,
   Right,
+  Form,
+  Item,
+  Input,
+  Label,
+  Title,
 } from 'native-base';
 
 const App = () => {
-  const BASE_URL = 'https://api.github.com/search/repositories?q=yura0seredyuk';
-
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [reposUrl, setReposUrl] = useState('');
   const [reposList, setReposList] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [searchedUser, setSearchedUser] = useState('');
+  const BASE_URL = `https://api.github.com/search/repositories?q=${searchedUser}`;
 
   useEffect(() => {
     fetch(BASE_URL)
@@ -36,7 +42,15 @@ const App = () => {
       .then(data => {
         setReposList(data);
       });
-  }, [reposUrl]);
+  }, [BASE_URL, reposUrl]);
+
+  const handleSearchValue = value => {
+    setSearchValue(value);
+  };
+
+  const handleSubmit = () => {
+    setSearchedUser(searchValue);
+  };
 
   function displayCard() {
     return reposList.map(repos => {
@@ -57,7 +71,6 @@ const App = () => {
                   name="star-border"
                   style={styles.star}
                 />
-                <Text></Text>
               </Button>
             </Right>
           </CardItem>
@@ -98,7 +111,26 @@ const App = () => {
 
   return (
     <Container>
-      <Header />
+      <Header>
+        <Left />
+        <Body>
+          <Title>GitHub Search</Title>
+        </Body>
+        <Right>
+          <Button transparent>
+            <Icon name="search" />
+          </Button>
+        </Right>
+      </Header>
+      <Form>
+        <Item floatingLabel>
+          <Label>Username</Label>
+          <Input value={searchValue} onChangeText={handleSearchValue} />
+        </Item>
+        <Button block light onPress={handleSubmit}>
+          <Text>Search</Text>
+        </Button>
+      </Form>
       <Content>{displayCard()}</Content>
     </Container>
   );
